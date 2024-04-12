@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="2,3"  # 必须在`import torch`语句之前设置才能生效
+os.environ["CUDA_VISIBLE_DEVICES"]="0,1"  
 import torch
 import torch.optim as optim
 import torch.nn as nn
@@ -17,7 +17,7 @@ train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 model = Net()
 model = model.to(device)
 optimizer = optim.SGD(model.parameters(), lr=0.1)
-model = nn.DataParallel(model)  # 就在这里wrap一下，模型就会使用所有的GPU
+model = nn.DataParallel(model)  
 
 # training!
 tb_writer = SummaryWriter(comment='data-parallel-training')
@@ -26,8 +26,8 @@ for i, (inputs, labels) in enumerate(train_loader):
     inputs = inputs.to(device)
     labels = labels.to(device)
     outputs = model(inputs, labels=labels)
-    loss = outputs[0]  # 对应模型定义中，模型返回始终是tuple
-    loss = loss.mean()  # 将多个GPU返回的loss取平均
+    loss = outputs[0]  
+    loss = loss.mean()  
     # backward
     optimizer.zero_grad()
     loss.backward()
